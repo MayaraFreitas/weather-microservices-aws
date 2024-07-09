@@ -17,7 +17,7 @@ var app = builder.Build();
 
 app.MapGet("/temperature/{zip}", async (string zip, [FromQuery] int? days, TemperatureDbContext db) =>
 {
-    if (days != null || days < 0 || days > 30)
+    if (days == null || days < 0 || days > 30)
         return Results.BadRequest("Please provide a 'days' query parameter between 1 and 30");
 
     var startDate = DateTime.UtcNow - TimeSpan.FromDays(days.Value);
