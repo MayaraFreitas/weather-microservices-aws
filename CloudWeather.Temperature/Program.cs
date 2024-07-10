@@ -15,7 +15,7 @@ builder.Services.AddDbContext<TemperatureDbContext>(
 
 var app = builder.Build();
 
-app.MapGet("/temperature/{zip}", async (string zip, [FromQuery] int? days, TemperatureDbContext db) =>
+app.MapGet("/observation/{zip}", async (string zip, [FromQuery] int? days, TemperatureDbContext db) =>
 {
     if (days == null || days < 0 || days > 30)
         return Results.BadRequest("Please provide a 'days' query parameter between 1 and 30");
@@ -29,7 +29,7 @@ app.MapGet("/temperature/{zip}", async (string zip, [FromQuery] int? days, Tempe
 });
 
 
-app.MapPost("/temperature", async (Temperature temp, TemperatureDbContext db) =>
+app.MapPost("/observation", async (Temperature temp, TemperatureDbContext db) =>
 {
     temp.CreatedOn = temp.CreatedOn.ToUniversalTime();
     await db.AddAsync(temp);

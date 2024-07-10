@@ -104,7 +104,7 @@ namespace CloudWeather.Report.BusinessLogic
             var tempServiceProtocol = _weatherDataConfig.TempDataProtocol;
             var tempDataHost = _weatherDataConfig.TempDataHost;
             var tempDataPort = _weatherDataConfig.TempDataPort;
-            return $"{tempServiceProtocol}://{tempDataHost}:{tempDataPort}/temperature/{zipCode}?days={days}";
+            return $"{tempServiceProtocol}://{tempDataHost}:{tempDataPort}/observation/{zipCode}?days={days}";
         }
 
         private async Task<List<PrecipitationModel>> FetchPrecipitationData(HttpClient httpClient, string zipCode, int days)
