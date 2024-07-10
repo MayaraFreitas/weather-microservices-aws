@@ -1,6 +1,7 @@
 ﻿using CloudWeather.Report.Config;
 using CloudWeather.Report.DataAccess;
 using CloudWeather.Report.Models;
+using Microsoft.Extensions.Options;
 using System.Text.Json;
 
 namespace CloudWeather.Report.BusinessLogic
@@ -25,12 +26,12 @@ namespace CloudWeather.Report.BusinessLogic
 
         public WeatherReportAggregator(IHttpClientFactory http,
                                        ILogger<WeatherReportAggregator> logger,
-                                       WeatherDataConfig weatherDataConfig,
+                                       IOptions<WeatherDataConfig> weatherDataConfig,
                                        WeatherReportDbContext db)
         {
             _http = http;
             _logger = logger;
-            _weatherDataConfig = weatherDataConfig;
+            _weatherDataConfig = weatherDataConfig.Value;
             _db = db;
         }
 
@@ -47,8 +48,8 @@ namespace CloudWeather.Report.BusinessLogic
             );
 
             var tempData = await FetchTemperatureData(httpClient, zipCode, days);
-            var averageTempHigh = tempData.Average(t => t.TempHighF);
-            var averageTempLow = tempData.Average(t => t.TempLowF);
+            var averageTempHigh = tempData.Any() ? tempData.Average(t => t.TempHighF) : 0m;
+            var averageTempLow = tempData.Any() ? tempData.Average(t => t.TempLowF) : 0m;
 
             var weatherReport = new WeatherReport
             {
