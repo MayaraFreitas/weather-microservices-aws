@@ -37,6 +37,7 @@ namespace CloudWeather.Report.BusinessLogic
 
         public async Task<WeatherReport> BuildReport(string zipCode, int days)
         {
+            Console.WriteLine("Building Report");
             var httpClient = _http.CreateClient();
 
             var precipData = await FetchPrecipitationData(httpClient, zipCode, days);
@@ -105,7 +106,9 @@ namespace CloudWeather.Report.BusinessLogic
             var tempServiceProtocol = _weatherDataConfig.TempDataProtocol;
             var tempDataHost = _weatherDataConfig.TempDataHost;
             var tempDataPort = _weatherDataConfig.TempDataPort;
-            return $"{tempServiceProtocol}://{tempDataHost}:{tempDataPort}/observation/{zipCode}?days={days}";
+            var uri = $"{tempServiceProtocol}://{tempDataHost}:{tempDataPort}/observation/{zipCode}?days={days}";
+            Console.WriteLine($"Temperature URI: {uri}");
+            return uri;
         }
 
         private async Task<List<PrecipitationModel>> FetchPrecipitationData(HttpClient httpClient, string zipCode, int days)
@@ -131,7 +134,9 @@ namespace CloudWeather.Report.BusinessLogic
             var precipDataProtocol = _weatherDataConfig.PrecipDataProtocol;
             var precipDataHost = _weatherDataConfig.PrecipDataHost;
             var precipDataPort = _weatherDataConfig.PrecipDataPort;
-            return $"{precipDataProtocol}://{precipDataHost}:{precipDataPort}/observation/{zipCode}?days={days}";
+            var uri = $"{precipDataProtocol}://{precipDataHost}:{precipDataPort}/observation/{zipCode}?days={days}";
+            Console.WriteLine($"Precipitation URI: {uri}");
+            return uri;
         }
     }
 }

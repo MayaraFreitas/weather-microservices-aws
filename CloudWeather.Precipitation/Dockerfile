@@ -8,7 +8,7 @@ RUN dotnet publish "./CloudWeather.Precipitation.csproj" -c release -o /app --no
 # Service Stage
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
-COPY --from=build-env /App/out .
+COPY --from=build-env /app .
 
 EXPOSE 5000
 

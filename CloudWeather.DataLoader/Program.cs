@@ -2,8 +2,10 @@
 using Microsoft.Extensions.Configuration;
 using System.Net.Http.Json;
 
+Console.WriteLine("Starting Configuration");
+
 IConfiguration config = new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json")
+    .AddJsonFile("appSettings.json")
     .AddEnvironmentVariables()
     .Build();
 
@@ -13,9 +15,15 @@ var tempConfig = servicesConfig.GetSection("Temperature");
 var tempServiceHost = tempConfig["Host"];
 var tempServicePort = tempConfig["Port"];
 
+Console.WriteLine($"Temperature Host: {tempServiceHost}");
+Console.WriteLine($"Temperature Port: {tempServicePort}");
+
 var precipConfig = servicesConfig.GetSection("Precipitation");
 var precipServiceHost = precipConfig["Host"];
 var precipServicePort = precipConfig["Port"];
+
+Console.WriteLine($"Precipitation Host: {precipServiceHost}");
+Console.WriteLine($"Precipitation Port: {precipServicePort}");
 
 var zipCodes = new List<string>()
 {
@@ -26,13 +34,19 @@ var zipCodes = new List<string>()
     "19717",
 };
 
-Console.WriteLine("Starting Data locad");
+Console.WriteLine("Configuration Completed");
+
+Console.WriteLine("Starting Data load");
 
 var temperatureHttpClient = new HttpClient();
-temperatureHttpClient.BaseAddress = new Uri($"http://{tempServiceHost}:{tempServicePort}");
+var temperatureUri = $"http://{tempServiceHost}:{tempServicePort}";
+Console.WriteLine($"Temperature Uri: {temperatureUri}");
+temperatureHttpClient.BaseAddress = new Uri(temperatureUri);
 
 var precipitationHttpClient = new HttpClient();
-precipitationHttpClient.BaseAddress = new Uri($"http://{precipServiceHost}:{precipServicePort}");
+var precipitationUri = $"http://{precipServiceHost}:{precipServicePort}";
+Console.WriteLine($"Precipitation Uri: {precipitationUri}");
+precipitationHttpClient.BaseAddress = new Uri(precipitationUri);
 
 foreach(var zipCode in zipCodes)
 {
@@ -88,6 +102,10 @@ void PostPrecip(int lowTemp, string zipCode, DateTime day, HttpClient httpclient
             $"WeatherType: {precipitation.WeatherType}" +
             $"Amound (in.): {precipitation.AmountInches}");
     }
+    else
+    {
+        Console.WriteLine($"Fail to get precipitation. Zip code {zipCode}. Status Code: {precipResponse.StatusCode} - {precipResponse.Content}");
+    }
 }
 
 List<int> PostTemp(string zipCode, DateTime day, HttpClient httpclient)
@@ -113,10 +131,14 @@ List<int> PostTemp(string zipCode, DateTime day, HttpClient httpclient)
 
     if (precipResponse.IsSuccessStatusCode)
     {
-        Console.WriteLine($"Posted Precipitation Date: {day:d}" +
+        Console.WriteLine($"Posted Temperature Date: {day:d}" +
             $"Zip: {zipCode}" +
             $"Lo (F): {hiLoTemps[0]}" +
             $"Hi (F): {hiLoTemps[1]}");
+    }
+    else
+    {
+        Console.WriteLine($"Fail to get Temperature. Zip code {zipCode}. Status Code: {precipResponse.StatusCode} - {precipResponse.Content}");
     }
 
     return hiLoTemps;

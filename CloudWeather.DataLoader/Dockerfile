@@ -8,6 +8,6 @@ RUN dotnet publish "./CloudWeather.DataLoader.csproj" -c release -o /app --no-re
 # Service Stage
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
-COPY --from=build-env /App/out .
+COPY --from=build-env /app .
 
 ENTRYPOINT ["dotnet", "CloudWeather.DataLoader.dll"]

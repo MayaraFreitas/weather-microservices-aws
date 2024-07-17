@@ -10,7 +10,7 @@ RUN dotnet publish "./CloudWeather.Temperature.csproj" -c release -o /app --no-r
 # Service Stage
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
-COPY --from=build-env /app ./
+COPY --from=build-env /app .
 
 EXPOSE 5000
 
